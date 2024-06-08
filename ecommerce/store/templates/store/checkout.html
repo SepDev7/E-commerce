@@ -1,3 +1,27 @@
-<h1>Checkout</h1>
+<!-- <h1>Checkout</h1>
 <p>Thank you for your order!</p>
-<p>Order Number: {{ order.id }}</p>
+<p>Order Number: {{ order.id }}</p> -->
+
+<script src="https://js.stripe.com/v3/"></script>
+<h1>Checkout</h1>
+<p>Total: ${{ order.total }}</p>
+<button id="checkout-button">Pay with Stripe</button>
+<script>
+  var stripe = Stripe('{{ STRIPE_PUBLISHABLE_KEY }}');
+  var checkoutButton = document.getElementById('checkout-button');
+  checkoutButton.addEventListener('click', function () {
+      fetch("{% url 'create_payment_intent' %}", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": "{{ csrf_token }}",
+          },
+      })
+      .then(function (response) {
+          return response.json();
+      })
+      .then(function (data) {
+          stripe.redirectToCheckout({ sessionId: data.sessionId });
+      });
+  });
+</script>

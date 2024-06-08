@@ -1,6 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Product, Cart, CartItem, Order, OrderItem
+import stripe
+from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 
 def product_list(request):
     products = Product.objects.all()
@@ -31,3 +35,20 @@ def checkout(request):
         OrderItem.objects.create(order=order, product=item.product, quantity=item.quantity)
     cart.cartitem_set.all().delete()
     return render(request, 'store/checkout.html', {'order': order})
+
+@csrf_exempt
+def create_payment_intent(request):
+    if request.method == 'POST':
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+        intent = stripe.PaymentIntent.create(
+            amount=calculate_order_amount(request),
+            currency='usd',
+            automatic_payment_methods={
+                'enabled': True,
+            },
+        )
+        return JsonResponse({'clientSecret': intent['client_secret']})
+
+def calculate_order_amount(request):
+    # Implement your order amount calculation here
+    return 1400
