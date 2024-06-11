@@ -125,6 +125,6 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-STRIPE_SECRET_KEY = 'your_secret_key'
+STRIPE_SECRET_KEY = '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'
 
-STRIPE_PUBLISHABLE_KEY = 'your_publishable_key'
+STRIPE_PUBLISHABLE_KEY = 'pk_live_51NTm3cKXxn7ePEhQdvxPY4tIg2MzEWjT2W3PBoH6R3oaDQzq6IbOI0yHVEICPSkzoxBRU4ddkdMUrTsrGbY2scXo00Uv69WrTv'
