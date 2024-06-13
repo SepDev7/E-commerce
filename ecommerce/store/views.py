@@ -5,6 +5,7 @@ import stripe
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+from .forms import ProductForm
 
 def product_list(request):
     products = Product.objects.all()
@@ -52,3 +53,14 @@ def create_payment_intent(request):
 def calculate_order_amount(request):
     # Implement your order amount calculation here
     return 1400
+
+def add_product(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('product_list')  # Redirect to the product list or any other page
+    else:
+        form = ProductForm()
+    
+    return render(request, 'store/add_product.html', {'form': form})
